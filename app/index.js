@@ -50,6 +50,22 @@ function SleighFree(){
 
 	var story = game.createGameObject('welcome-screen');
 
+	var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+	var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+	if(w > 400) {
+		w = 400;
+	}
+	if(h > 720) {
+		h = 720;
+	}
+
+	stage.elem.style.height = h + 'px';
+	stage.elem.style.width = w + 'px';
+
+	stage.height = h;
+	stage.width = w;
+
 	avalanche.y = 0;
 	avalanche.speed = 2;
 
@@ -110,7 +126,7 @@ function SleighFree(){
 
 	function init(){
 		Tweener.to(avalanche, 60, {speed:12}, CubicBezier.config(.31,.7,.31,.94));
-		Tweener.to(story, 1, {y: -700}, CubicBezier.config(.31,.7,.31,.94))
+		Tweener.to(story, 1, {y: -stage.height}, CubicBezier.config(.31,.7,.31,.94))
 		game.ontick = tick;
 	}
 
