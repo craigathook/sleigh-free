@@ -19,6 +19,12 @@ function Tweener() {
 		this.tweens.push(tween);
 	}.bind(this);
 
+	this.killAllTweens = function(){
+		for(var t in this.tweens){
+			this.tweens[t].update = function(){};
+		}
+	}.bind(this);
+
 	this.render = function() {
 		for(var t in this.tweens){
 			console.log('1');
@@ -37,6 +43,7 @@ function Tweener() {
 		this.endProps = properties;
 		this.ease = ease;
 		this.startProps = getStartProps(target, properties);
+		this.killed = false;
 
 		function getStartProps(target, endProps){
 			// only build a startProps object with the properties we are actually going to tween.
@@ -59,7 +66,7 @@ function Tweener() {
 				var change = this.endProps[p] - this.startProps[p];
 				this.target[p] = this.startProps[p] + (change * this.ease(this.progress));
 			}
-			if(this.progress < 1) {
+			if(this.progress < 1 && this.killed == false) {
 				window.requestAnimationFrame(this.update);
 			}
 		}.bind(this);

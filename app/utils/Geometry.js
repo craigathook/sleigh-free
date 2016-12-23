@@ -51,4 +51,4 @@ function Geometry() {
   };
 }
 
-module.exports = Geometry;
+module.exports = new Geometry();

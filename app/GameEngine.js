@@ -39,11 +39,15 @@ function GameEngine() {
 			var elem = gameObject.elem;
 
 			//console.log(elem, gameObject.x);
-			elem.style.display = 'block';
+			elem.style.visibility = 'visible';
+			elem.style.position = 'absolute';
 
 			// position
 			elem.style.left = gameObject.x + 'px';
 			elem.style.top = gameObject.y + 'px';
+
+			// opacity 
+			elem.style.opacity = gameObject.alpha;
 
 			// rotation
 			elem.style.webkitTransform = 'rotate('+gameObject.rotation+'deg)';
@@ -58,14 +62,18 @@ function GameEngine() {
 
 
 	this.createGameObject = function(assetName, name){
-		var elem = this.assetContainer.querySelector('.'+assetName).cloneNode(true);
+		var elem = this.assetContainer.querySelector('.'+assetName);
+		var clone = elem.cloneNode(true);
 
-		elem.style.display = 'none';
+		elem.style.visibility = 'hidden';
+		elem.style.display = 'block';
 		elem.style.position = 'absolute';
 		elem.style.top = '0px';
 		elem.style.left = '0px';
 
-		var gameObject = new GameObject(elem, this.gameObjects.length, name);
+		var gameObject = new GameObject(clone, this.gameObjects.length, name);
+		gameObject.width = elem.offsetWidth;
+		gameObject.height = elem.offsetHeight;
 		this.gameObjects.push(gameObject);
 		//this.gameContainer.appendChild(elem);
 		return gameObject;
@@ -73,7 +81,9 @@ function GameEngine() {
 
 	this.setAssetContainer = function(elem){
 		this.assetContainer = elem;
-		elem.style.display = 'none';
+		elem.style.display = 'block';
+		elem.style.position = 'absolute';
+		elem.style.top = '-10000px';
 	}.bind(this);
 
 	this.setStage = function(elem, width, height){
@@ -86,8 +96,8 @@ function GameEngine() {
 	}.bind(this);
 
 	this.updateMouse = function(event){
-		var x = event.clientX - this.stage.elem.offsetLeft;
-		var y = event.clientY - this.stage.elem.offsetTop;
+		var x = pointerEventToXY(event).x - this.stage.elem.offsetLeft;
+		var y = pointerEventToXY(event).y - this.stage.elem.offsetTop;
 		if(x < 0) x = 0;
 		if(x > this.stage.width) x = this.stage.width;
 		if(y < 0) y = 0;
@@ -96,8 +106,22 @@ function GameEngine() {
 		this.mouse.y = y;
 	}.bind(this);
 
+	var pointerEventToXY = function(e){
+      var out = {x:0, y:0};
+      if(e.type == 'touchstart' || e.type == 'touchmove' || e.type == 'touchend' || e.type == 'touchcancel'){
+        var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        out.x = touch.pageX;
+        out.y = touch.pageY;
+      } else if (e.type == 'mousedown' || e.type == 'mouseup' || e.type == 'mousemove' || e.type == 'mouseover'|| e.type=='mouseout' || e.type=='mouseenter' || e.type=='mouseleave') {
+        out.x = e.pageX;
+        out.y = e.pageY;
+      }
+      return out;
+    };
+
 	window.requestAnimationFrame(this.update);
 	document.onmousemove = this.updateMouse;
+	document.ontouchmove = this.updateMouse;
 }
 
 function GameObject(elem, id, name) {
@@ -129,7 +153,7 @@ function GameObject(elem, id, name) {
 
 	this.remove = function(gameObject){
 		gameObject = gameObject || this;
-		if(gameObject.parent)  {
+		if(gameObject.parent && gameObject.elem.parentNode)  {
 			gameObject.elem.parentNode.removeChild(gameObject.elem);
 		}
 		for(var c in this.children) {
