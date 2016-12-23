@@ -26,7 +26,8 @@ function GameEngine() {
 
 		this.render();
 
-		window.requestAnimationFrame(this.update);
+		//window.requestAnimationFrame(this.update);
+		setTimeout(this.update, 1000/60);
 	}.bind(this);
 
 	this.stage = null;
@@ -119,7 +120,8 @@ function GameEngine() {
       return out;
     };
 
-	window.requestAnimationFrame(this.update);
+	//window.requestAnimationFrame(this.update);
+	setTimeout(this.update, 1000/60);
 	document.onmousemove = this.updateMouse;
 	document.ontouchmove = this.updateMouse;
 }

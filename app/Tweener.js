@@ -67,11 +67,13 @@ function Tweener() {
 				this.target[p] = this.startProps[p] + (change * this.ease(this.progress));
 			}
 			if(this.progress < 1 && this.killed == false) {
-				window.requestAnimationFrame(this.update);
+				//window.requestAnimationFrame(this.update);
+				setTimeout(this.update, 1000/60);
 			}
 		}.bind(this);
 
-		window.requestAnimationFrame(this.update);
+		//window.requestAnimationFrame(this.update);
+		setTimeout(this.update, 1000/60);
 		//console.log(this);
 	}
 
