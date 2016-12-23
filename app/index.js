@@ -240,6 +240,8 @@ function SleighFree(){
 
 	}
 
+	this.replay = replay;
+
 	function endGame() {
 		if(!gameOver) {
 			console.log('???")')
