@@ -279,4 +279,5 @@ function SleighFree(){
 	window.game = game;
 }
 
-new SleighFree();
+
+window.SleighFree = SleighFree;
